@@ -561,18 +561,7 @@ Hecho por Alejandro Piedrahita Muñoz - @Alejostone
 
 
 
-# 🏪 ADI ESTILOS - Sistema Integral de Gestión Comercial
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Node.js-18%2B-green?style=for-the-badge&logo=node.js" alt="Node.js">
-  <img src="https://img.shields.io/badge/React-18-blue?style=for-the-badge&logo=react" alt="React">
-  <img src="https://img.shields.io/badge/MySQL-8.0-orange?style=for-the-badge&logo=mysql" alt="MySQL">
-  <img src="https://img.shields.io/badge/Tailwind_CSS-38BDF8?style=for-the-badge&logo=tailwind-css" alt="Tailwind">
-</p>
-
-> ✅ **NOTA IMPORTANTE**: Este proyecto usa **MySQL** como base de datos, NO PostgreSQL.
-
----
+# 🏪 ADI ESTILOS - Sistema Técnico Integral del Sistema
 
 ## 📋 Tabla de Contenidos
 
