@@ -1,0 +1,55 @@
+{
+  "version": 2,
+  "name": "adi-estilos-frontend",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://api.adiestilos.top/api/$1"
+    },
+    {
+      "src": "/uploads/(.*)",
+      "dest": "https://api.adiestilos.top/uploads/$1"
+    }
+  ],
+  "env": {
+    "VITE_API_URL": "https://api.adiestilos.top/api",
+    "VITE_FILES_URL": "https://api.adiestilos.top"
+  },
+  "functions": {
+    "api/server.js": {
+      "maxDuration": 10
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "application/json"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
+  ]
+}
