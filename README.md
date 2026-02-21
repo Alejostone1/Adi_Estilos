@@ -1,3 +1,566 @@
+# 🚀 Adi Estilos - E-commerce Full Stack
+
+<div align="center">
+
+![React](https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react)
+![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js)
+![Express](https://img.shields.io/badge/Express-4.18-000000?style=for-the-badge&logo=express)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql)
+![Prisma](https://img.shields.io/badge/Prisma-5.0-2D3748?style=for-the-badge&logo=prisma)
+![Vite](https://img.shields.io/badge/Vite-5.0-646CFF?style=for-the-badge&logo=vite)
+![Tailwind](https://img.shields.io/badge/Tailwind-3.4-38B2AC?style=for-the-badge&logo=tailwind-css)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel)
+![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render)
+
+**E-commerce moderno con panel de administración completo**
+
+</div>
+
+---
+
+## 📋 Descripción del Sistema
+
+**Adi Estilos** es un sistema de comercio electrónico completo desarrollado con arquitectura moderna de dos capas:
+
+### 🏪 Tienda Pública (Cliente)
+- Catálogo de productos con filtros avanzados
+- Carrito de compras interactivo
+- Sistema de autenticación de usuarios
+- Proceso de compra y pedidos
+- Historial de pedidos
+
+### ⚙️ Panel de Administración
+- Gestión de productos (CRUD completo)
+- Control de inventario y variantes
+- Módulo de ventas y compras
+- Sistema de clientes con crédito
+- Reportes y estadísticas
+- Gestión de categorías, colores, talles
+
+### 🔌 API REST Backend
+- Endpoints protegidos con JWT
+- Upload de imágenes con Multer
+- Base de datos MySQL con Prisma ORM
+- Validación de datos completa
+- Rate limiting y seguridad
+
+---
+
+## ☁️ Arquitectura Cloud
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                         ARQUITECTURA DEL SISTEMA                     │
+└─────────────────────────────────────────────────────────────────────┘
+
+     ┌──────────────┐         ┌──────────────┐         ┌──────────┐
+     │   USUARIO    │────────▶│   FRONTEND   │         │  MYSQL   │
+     └──────────────┘         │   (Vercel)   │         │ Database │
+                              └──────┬───────┘         │(Railway) │
+                                     │                 └────┬─────┘
+                                     │ 🔗 API              │
+                                     ▼                     │
+                              ┌──────────────┐             │
+                              │   BACKEND    │◀────────────┘
+                              │   (Render)   │
+                              └──────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  FRONTEND → Vercel (Gratis)                                         │
+│  BACKEND  → Render (Gratis)                                         │
+│  DATABASE → Railway MySQL (500MB Gratis)                            │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🧰 Requisitos Previos
+
+| Requisito | Versión Mínima | Descripción |
+|-----------|----------------|-------------|
+| Node.js | 18+ | Runtime de JavaScript |
+| MySQL | 8.0+ | Base de datos (local) |
+| Git | 2.0+ | Control de versiones |
+| npm | 9.0+ | Gestor de paquetes |
+
+### Instalación de Node.js
+```
+bash
+# Windows
+# Descargar desde: https://nodejs.org/
+
+# macOS (con Homebrew)
+brew install node
+
+# Linux (Ubuntu/Debian)
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+```
+
+---
+
+## 💻 Instalación Local
+
+### 1️⃣ Clonar el Repositorio
+
+```
+bash
+git clone https://github.com/tu-usuario/tiendaadi.git
+cd tiendaadi
+```
+
+### 2️⃣ Estructura del Proyecto
+
+```
+tiendaadi/
+├── Backend/              # API REST (Node.js + Express)
+│   ├── src/
+│   │   ├── config/      # Configuraciones
+│   │   ├── modules/     # Controladores y rutas
+│   │   ├── middleware/  # Middlewares Express
+│   │   └── utils/       # Utilidades
+│   ├── prisma/          # Schema y migraciones
+│   ├── uploads/         # Archivos subidos
+│   └── package.json
+│
+├── Frontend/            # Aplicación React
+│   ├── src/
+│   │   ├── api/         # Axios configuration
+│   │   ├── components/  # Componentes reutilizables
+│   │   ├── pages/       # Páginas del sistema
+│   │   ├── context/     # React Context
+│   │   └── utils/       # Utilidades
+│   ├── public/
+│   └── package.json
+│
+├── README.md
+└── DEPLOY.md            # Guía de despliegue
+```
+
+### 3️⃣ Instalar Dependencias
+
+#### Backend
+```
+bash
+cd Backend
+npm install
+```
+
+#### Frontend
+```
+bash
+cd Frontend
+npm install
+```
+
+---
+
+## 🗄️ Configuración de Base de Datos
+
+### Opción A: MySQL Local
+
+1. **Instalar MySQL** (si no lo tienes)
+   - Windows: https://dev.mysql.com/downloads/installer/
+   - macOS: `brew install mysql`
+   - Linux: `sudo apt install mysql-server`
+
+2. **Crear la Base de Datos**
+```
+sql
+CREATE DATABASE adi_estilos CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+3. **Configurar Variables de Entorno**
+```
+bash
+# Backend/.env
+DATABASE_URL="mysql://root:password@localhost:3306/adi_estilos"
+JWT_SECRET="tu-secreto-muy-largo-de-al-menos-32-caracteres"
+PORT=3000
+NODE_ENV=development
+```
+
+### Opción B: MySQL en Railway (Cloud)
+
+1. Ve a [Railway](https://railway.com)
+2. Crea un proyecto y agrega **MySQL**
+3. Copia la `DATABASE_URL` proporcionada
+
+---
+
+## ⚙️ Variables de Entorno
+
+### Backend (`Backend/.env`)
+
+| Variable | Descripción | Ejemplo |
+|----------|-------------|---------|
+| `DATABASE_URL` | Conexión MySQL | `mysql://user:pass@host:3306/db` |
+| `JWT_SECRET` | Clave JWT (mín 32 chars) | `clave-segura-muy-larga-12345678` |
+| `PORT` | Puerto del servidor | `3000` |
+| `NODE_ENV` | Entorno | `development` o `production` |
+| `CORS_ORIGIN` | Origen CORS permitido | `http://localhost:5173` |
+
+### Frontend (`Frontend/.env`)
+
+| Variable | Descripción | Ejemplo |
+|----------|-------------|---------|
+| `VITE_API_URL` | URL del backend | `http://localhost:3000/api` |
+| `VITE_APP_NAME` | Nombre de la app | `Adi Estilos` |
+| `VITE_FILES_URL` | URL de archivos | `http://localhost:3000` |
+
+### Frontend Producción (`Frontend/.env.production`)
+
+| Variable | Descripción | Ejemplo |
+|----------|-------------|---------|
+| `VITE_API_URL` | URL del backend en producción | `https://tu-backend.onrender.com/api` |
+| `VITE_APP_NAME` | Nombre de la app | `Adi Estilos` |
+| `VITE_FILES_URL` | URL de archivos en producción | `https://tu-backend.onrender.com` |
+
+---
+
+## 🏃 Ejecutar en Desarrollo
+
+### Iniciar Backend
+
+```
+bash
+cd Backend
+npm run dev
+```
+
+El backend estará disponible en: `http://localhost:3000`
+
+### Iniciar Frontend
+
+```
+bash
+cd Frontend
+npm run dev
+```
+
+La aplicación estará disponible en: `http://localhost:5173`
+
+### Credenciales de Prueba (Seed)
+
+El proyecto incluye datos de prueba:
+- **Usuario admin**: `admin@adi.com` / `admin123`
+- **Usuario cliente**: `cliente@adi.com` / `cliente123`
+
+---
+
+## 🚀 Despliegue en Producción
+
+### Parte 1: Desplegar Backend en Render
+
+#### Paso 1: Preparar el Repositorio
+1. Sube tu proyecto a GitHub
+2. Asegúrate de tener el archivo `Backend/render.yaml` (incluido)
+
+#### Paso 2: Crear Servicio en Render
+1. Ve a [Render Dashboard](https://dashboard.render.com)
+2. Inicia sesión con GitHub
+3. Click en **"New +"** → **"Web Service"**
+4. Conecta tu repositorio `tiendaadi`
+5. Configura:
+   - **Name**: `adi-estilos-backend`
+   - **Root Directory**: `Backend`
+   - **Region**: Oregon (o el más cercano)
+   - **Runtime**: `Node`
+   - **Build Command**: `npm install && npx prisma generate`
+   - **Start Command**: `npm start`
+
+#### Paso 3: Configurar Variables de Entorno
+En la sección **"Environment"**, agrega:
+
+| Variable | Valor |
+|----------|-------|
+| `DATABASE_URL` | `mysql://...` (ver más abajo) |
+| `JWT_SECRET` | Genera uno seguro: `openssl rand -base64 32` |
+| `PORT` | `3000` |
+| `NODE_ENV` | `production` |
+
+#### Paso 4: Crear Base de Datos MySQL
+
+**Opción: Railway MySQL (500MB gratis)**
+1. Ve a [Railway](https://railway.com)
+2. Crea un nuevo proyecto
+3. Agrega **MySQL** (plugin gratuito)
+4. Copia la `DATABASE_URL`
+5. Pégala en las Variables de Entorno de Render
+
+#### Paso 5: Ejecutar Migraciones
+1. En Render, ve a **"Shell"**
+2. Ejecuta:
+```
+bash
+npx prisma migrate deploy
+npx prisma db seed
+```
+
+**✅ Backend desplegado:** `https://adi-estilos-backend.onrender.com`
+
+---
+
+### Parte 2: Desplegar Frontend en Vercel
+
+#### Paso 1: Conectar Repositorio
+1. Ve a [Vercel Dashboard](https://vercel.com/dashboard)
+2. Click en **"Add New..."** → **"Project"**
+3. Selecciona tu repositorio `tiendaadi`
+
+#### Paso 2: Configurar Proyecto
+4. **Root Directory**: `Frontend`
+5. **Framework Preset**: `Vite`
+6. **Build Command**: `npm run build`
+7. **Output Directory**: `dist`
+
+#### Paso 3: Configurar Variables de Entorno
+Agrega estas variables:
+
+| Variable | Valor |
+|----------|-------|
+| `VITE_API_URL` | `https://tu-backend.onrender.com/api` |
+| `VITE_APP_NAME` | `Adi Estilos` |
+| `VITE_FILES_URL` | `https://tu-backend.onrender.com` |
+
+**Importante:** Reemplaza `tu-backend` con el nombre de tu servicio en Render.
+
+#### Paso 4: Desplegar
+1. Click en **"Deploy"**
+2. Espera 2-3 minutos
+
+**✅ Frontend desplegado:** `https://tu-proyecto.vercel.app`
+
+---
+
+### Parte 3: Conectar Frontend con Backend
+
+Una vez desplegado:
+
+1. **En Vercel**, ve a tu proyecto → **Settings** → **Environment Variables**
+2. Actualiza `VITE_API_URL` con la URL real de tu backend:
+
+```
+   VITE_API_URL=https://adi-estilos-backend.onrender.com/api
+
+```
+3. **Redeploy** el frontend para aplicar los cambios
+
+---
+
+## 📖 Manual de Usuario
+
+### 🛒 Comprar como Cliente
+
+1. **Registrarse/Iniciar sesión**
+   - Ir a la página de login/registro
+   - Ingresar datos o crear cuenta nueva
+
+2. **Explorar Productos**
+   - Navegar por el catálogo
+   - Filtrar por categoría, color, talla
+   - Ver detalles de productos
+
+3. **Agregar al Carrito**
+   - Seleccionar variante (color/talla)
+   - Elegir cantidad
+   - Click en "Agregar al carrito"
+
+4. **Finalizar Compra**
+   - Ir al carrito
+   - Revisar productos
+   - Seleccionar método de pago
+   - Confirmar pedido
+
+### ⚙️ Administrar como Admin
+
+1. **Acceder al Panel**
+   - Login con credenciales admin
+   - URL: `/admin`
+
+2. **Gestión de Productos**
+   - **Productos**: CRUD completo, variantes, precios
+   - **Categorías**: Crear/editar categorías
+   - **Colores/Tallas**: Configurar opciones
+
+3. **Gestión de Inventario**
+   - **Movimientos**: Control de entradas/salidas
+   - **Ajustes**: Corrección de stock
+
+4. **Gestión de Ventas**
+   - **Ventas**: Ver todos los pedidos
+   - **Clientes**: Gestión de clientes
+   - **Créditos**: Sistema de crédito
+
+5. **Reportes**
+   - Estadísticas de ventas
+   - Inventario actual
+   - Clientes y créditos
+
+---
+
+## 🔧 Manual para Desarrolladores
+
+### Estructura de Módulos (Backend)
+
+```
+Backend/src/modules/
+├── auth/                      # Autenticación y JWT
+├── usuarios/                  # Gestión de usuarios
+├── productos/                 # CRUD de productos
+├── variantes/                # Variantes de productos
+├── categorias/               # Categorías
+├── colores/                  # Colores
+├── tallas/                   # Tallas
+├── ventas/                   # Sistema de ventas
+├── compras/                  # Sistema de compras
+├── inventario/              # Control de inventario
+├── movimientos/              # Movimientos de stock
+├── clientesCreditoResumen/  # Créditos
+└── ...                       # Otros módulos
+```
+
+### Agregar Nuevo Módulo
+
+1. **Crear estructura:**
+```
+bash
+Backend/src/modules/nuevo-modulo/
+├── moduloController.js
+├── moduloRoutes.js
+└── moduloService.js
+```
+
+2. **Registrar rutas en `allRoutes.js`**
+
+3. **Crear API en frontend:**
+```bash
+Frontend/src/api/nuevoModuloApi.js
+```
+
+### Personalizar Estilos
+
+**Tailwind config** (`Frontend/tailwind.config.js`):
+```
+javascript
+export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        primary: '#tu-color',
+      },
+    },
+  },
+  plugins: [],
+}
+```
+
+---
+
+## ❗ Problemas Comunes
+
+### 🔴 Error: "Cannot connect to database"
+**Solución:**
+- Verifica que `DATABASE_URL` sea correcta
+- Confirma que MySQL esté activo
+- Verifica credenciales (usuario/contraseña)
+
+### 🔴 Error: "Prisma schema not found"
+**Solución:**
+```
+bash
+cd Backend
+npx prisma generate
+```
+
+### 🔴 Error: "CORS policy"
+**Solución:**
+- Verifica que `CORS_ORIGIN` incluya tu dominio
+- En desarrollo: `http://localhost:5173`
+- En producción: tu dominio de Vercel
+
+### 🔴 Error: "JWT_SECRET is required"
+**Solución:**
+- Genera una clave segura:
+```
+bash
+openssl rand -base64 32
+```
+- Agrégala a tus variables de entorno
+
+### 🔴 Error: "Build failed in Vercel"
+**Solución:**
+- Verifica que `Root Directory` sea `Frontend`
+- Asegúrate de tener `package.json` en esa carpeta
+
+### 🔴 Error: "App goes to sleep" (Render)
+**Solución:**
+- Es normal en el plan gratuito
+- La primera request después de inactividad será lenta
+- Considera actualizar a plan paid si necesitas always-on
+
+---
+
+## 📞 API Endpoints
+
+### Autenticación
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/api/auth/login` | Iniciar sesión |
+| POST | `/api/auth/register` | Registrarse |
+| GET | `/api/auth/me` | Perfil actual |
+
+### Productos
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | `/api/productos` | Listar productos |
+| GET | `/api/productos/:id` | Ver producto |
+| POST | `/api/productos` | Crear producto |
+| PUT | `/api/productos/:id` | Actualizar producto |
+| DELETE | `/api/productos/:id` | Eliminar producto |
+
+### Ventas
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | `/api/ventas` | Listar ventas |
+| POST | `/api/ventas` | Crear venta |
+
+### Inventario
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | `/api/inventario` | Ver stock |
+| POST | `/api/movimientos` | Registrar movimiento |
+
+*Ver archivo `Backend/src/allRoutes.js` para lista completa*
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la licencia ISC. @Alejostone
+
+---
+
+## 👤 Autor
+
+**Adi Estilos**
+- GitHub: [@adiestilos](https://github.com/adiestilos)
+- Email: contacto@adiestilos.com
+
+---
+
+<div align="center">
+
+**⭐ ¡Dale una estrella al proyecto si te fue útil!**
+
+Hecho por Alejandro Piedrahita Muñoz - @Alejostone
+
+</div>
+
+
+
+
 # 🏪 ADI ESTILOS - Sistema Integral de Gestión Comercial
 
 <p align="center">
@@ -476,7 +1039,7 @@ Frontend/src/pages/
 │   ├── inventario/
 │   │   ├── InventarioPage.jsx
 │   │   ├── MovimientosInventarioPage.jsx
-│   │   └── TiposMovimientoPage.jsx    # ← MODIFICADO (Diseño Responsive)
+│   │   └── TiposMovimientoPage.jsx    
 │   ├── productos/
 │   │   ├── ProductosPage.jsx
 │   │   ├── CategoriasPage.jsx
@@ -498,7 +1061,7 @@ Frontend/src/pages/
 │   ├── devoluciones/
 │   │   └── DevolucionesPage.jsx
 │   ├── usuarios/
-│   │   ├── UsuariosPage.jsx    # ← REFERENCIA (Diseño Responsive)
+│   │   ├── UsuariosPage.jsx  
 │   │   └── RolesPage.jsx
 │   └── reportes/
 │
