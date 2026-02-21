@@ -19,7 +19,7 @@ AppVite_2026/
 ### Backend
 - **Node.js** con **Express.js**
 - **Prisma ORM** para base de datos
-- **PostgreSQL** como base de datos
+- **MySQL** como base de datos
 - **JWT** para autenticación
 - **bcrypt** para encriptación de contraseñas
 - **multer** para manejo de archivos
