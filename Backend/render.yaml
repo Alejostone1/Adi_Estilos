@@ -3,6 +3,7 @@ services:
     name: adi-estilos-backend
     env: node
     region: oregon
+    rootDir: Backend
     buildCommand: npm install && npx prisma generate
     startCommand: npm start
     envVars:
@@ -14,3 +15,17 @@ services:
         sync: false
       - key: JWT_SECRET
         sync: false
+      - key: JWT_EXPIRES_IN
+        value: 24h
+      - key: CORS_ORIGIN
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: STORAGE_MODE
+        value: hybrid
+      - key: USE_CLOUDINARY
+        value: "true"
