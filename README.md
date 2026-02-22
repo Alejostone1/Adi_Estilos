@@ -8,8 +8,7 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-336791?style=for-the-badge&logo=postgresql)
 ![Prisma](https://img.shields.io/badge/Prisma-5.0-2D3748?style=for-the-badge&logo=prisma)
 ![Vite](https://img.shields.io/badge/Vite-5.0-646CFF?style=for-the-badge&logo=vite)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=Tailwind-CSS)
-![Cloudinary](https://img.shields.io/badge/Cloudinary-Cloud-blue?style=for-the-badge)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=&badgeWidths=true)
 
 **E-commerce moderno con panel de administración completo**
 
@@ -41,370 +40,191 @@
 | **Ventas** | Punto de venta POS, historial detallado, estados de pedido |
 | **Créditos** | Sistema cuentas por cobrar, abonos automáticos, alertas de mora |
 | **Compras** | Órdenes a proveedores, recepción de mercancía |
-| **Reportes** | Dashboard, analytics, estadísticas en tiempo real |
+| **Reportes** | Dashboard analytics en tiempo real |
 
 ---
 
 ## 🛠️ Tecnologías Utilizadas
 
 ### Backend Stack
-
-| Tecnología | Propósito |
-|------------|-----------|
-| Node.js 18+ | Runtime de JavaScript |
-| Express.js 4.x | Framework web REST API |
-| Prisma 5.x | ORM para base de datos |
-| PostgreSQL | Base de datos relacional |
-| JWT + bcrypt | Autenticación y seguridad |
-| Multer | Manejo de uploads |
-| Helmet + CORS | Headers de seguridad |
+-| Tecnología Propósito
+|----|------
+-| Node.js 18+ Runtime JavaScript
+-| Express.js 4.x Framework web REST API
+-| Prisma 5.x ORM base datos PostgreSQ-
+-| PostgreSQL Base datos relacional
+-| JWT + bcrypt Autenticación seguridad-
++| Multer Manejo uploads imágenes-
++| Cloudinary Almacenamiento híbrido imágen-
 
 ### Frontend Stack
+---| Tecnología Propósito
+----|------
+-- React 18.x Biblioteca interfaz usuario
+-- Vite Build tool dev server
+-- Tailwind CSS Framework estilos
+-- Ant Design Componentes UI profesionales
+-- Framer Motion Animaciones
+--- React Router DOM Enrutamiento
 
-| Tecnología | Propósito |
-|------------|-----------|
-| React 18.x | Biblioteca de interfaz de usuario |
-| Vite | Build tool y dev server |
-| Tailwind CSS | Framework de estilos |
-| Ant Design | Componentes UI profesionales |
-| Framer Motion | Animaciones |
-| React Router DOM | Enrutamiento |
-| Axios | Cliente HTTP |
-| Lucide React | Iconos |
-| Recharts | Gráficos y analytics |
+---
+Axios Cliente HTTP
 
 ---
 
-## ☁️ Arquitectura del Sistema
+## ☁️ Arquitectura Cloud
+
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    ARQUITECTURA DEL SISTEMA                    │
-└─────────────────────────────────────────────────────────────────┘
-
-     ┌──────────┐    ┌──────────┐    ┌──────────────────┐
-     │  USUARIO │───▶│ FRONTEND │───▶│     BACKEND       │
-     └──────────┘    │ (Vercel) │    │    (Render)      │
-                     └────┬─────┘    └────────┬─────────┘
-                          │                  │
-                          ▼                  ▼
-                   ┌──────────────────┐  ┌────────────┐
-                   │   CDN Global     │  │ PostgreSQL │
-                   │  (Cloudinary)   │  │ (Railway) │
-                   └──────────────────┘  └────────────┘
+┌─────────────────────────────────────────────────────────────────┐│ ARQUITECTURA DEL SISTEMA │└─────────────────────────────────────────────────────────────────┘     ┌──────────┐    ┌──────────┐    ┌──────────────────┐     │ USUARIO │───▶│ FRONTEND │───▶│ BACKEND │
+     └──────────┘    │(Vercel)   │    │   (Render)       │
+                     └────┬─────┘    └────────┬─────────┘                          │                  │
+                          ▼                  ▼                   ┌──────────────────┐  ┌────────────┐                   CDN Global      ├───────────────── ────┴───┴───────────────── ────┤ Imágenes        ├───────────────── ────┴───┴───────────────── ---+ Storage          ├───────────────── ────┴───┴---------------------+ Hybrid           ├------------------+-------------------------+
 ```
 
-### Servicios en Producción
+### Servicios Producción
 
-| Componente | Servicio | Plan | Estado |
-|------------|----------|------|--------|
-| Frontend | Vercel | Free | ✅ Listo |
-| Backend | Render | Free | ✅ Listo |
-| Base de Datos | Neon / Railway | 500MB | ✅ Listo |
-| Imágenes | Cloudinary | 25GB/mes | ✅ Listo |
+Componente|Servicio Plan Estado:
+---|---|---|---
+Frontend|Vercel|Free:|✅ Listo
+Backend|Render|Free:|✅ Listo
+Base Datos|PostgreS-QL Neon/Railway|Free:500MB ✅Listo
+Imágenes.Cloudinary|Gratis:25GB/mês ✅Listo
 
 ---
 
-## 📁 Estructura del Proyecto
+## 📁 Estructura Proyecto
 
-```
-adi-estilos/
-├── 📂 Backend/
-│   ├── 📂 prisma/
-│   │   ├── migrations/       # Migraciones de BD
-│   │   ├── seeds/             # Datos iniciales
-│   │   └── schema.prisma      # Schema ORM
-│   ├── 📂 src/
-│   │   ├── config/            # Configuraciones
-│   │   ├── middleware/        # Middlewares Express
-│   │   ├── modules/          # Módulos de negocio
-│   │   └── utils/             # Utilidades
-│   ├── 📂 uploads/           # Archivos locales
-│   ├── package.json
-│   ├── Procfile
-│   └── Dockerfile
-│
-├── 📂 Frontend/
-│   ├── 📂 src/
-│   │   ├── api/              # Servicios API
-│   │   ├── components/       # Componentes
-│   │   ├── pages/            # Páginas
-│   │   ├── context/          # Context API
-│   │   ├── routes/           # Rutas
-│   │   └── utils/            # Utilidades
-│   ├── package.json
-│   ├── vite.config.js
-│   └── vercel.json
-│
-├── README.md
-└── DEPLOY.md
+
+```adi-estilos/
+├── Backend/
+│ ├── prisma/
+│ ├── src/config/, middleware/, modules/, utils/
+│ ├── uploads/
+│ └── package.json Frontend/
+
+├── src/api/, components/, pages/, context/, routes/
+├── package.json DEPLOY.md CONFIG.md└
 ```
 
 ---
 
 ## 🔧 Requisitos Previos
 
-| Requisito | Versión | Comando |
-|-----------|---------|---------|
-| Node.js | 18.x+ | `node --version` |
-| npm | 9.x+ | `npm --version` |
-| PostgreSQL | 15+ | `psql --version` |
-| Git | 2.x+ | `git --version` |
-
-### Instalación de Node.js
-
-```
-bash
-# macOS (con Homebrew)
-brew install node
-
-# Linux (Ubuntu/Debian)
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt-get install -y nodejs
-
-# Verificar versiones
-node -v && npm -v
-```
-
----
-
-## 💻 Instalación Local
-
-### 1. Clonar el Repositorio
 
-```
-bash
-git clone https://github.com/tu-usuario/adi-estilos.git
-cd adi-estilos
-```
+Requisito|Versión|Comando verificación:
+---|---|----
+Node.js|npm --version: node --version||9.x+|npm --version||Git|--git version|
 
-### 2. Instalar Dependencias
+--
 
-#### Backend
+Instalar Node.j-s:
 
-```
-bash
-cd Backend
-npm install
-npx prisma generate
-```
+bash# macOSbrew install node# Linuxcurl fsSL https deb.nodesource.com/setup_20 x sudo -E bash -sudo apt-get install -y nodejs```
 
-#### Frontend
+--
 
-```
-bash
-cd Frontend
-npm install
-```
+💻 Instalación Local
 
----
 
-## ⚙️ Configuración de Variables de Entorno
+1.Clonar repositorio:
 
-### Backend (`Backend/.env`)
 
-```
-env
-# ============================================
-# CONFIGURACIÓN DE BASE DE DATOS
-# ============================================
-DATABASE_URL="postgresql://user:password@localhost:5432/adi_estilos?schema=public"
+bashgit clone https //github.com/Alejostone1.Adi_Estilos.gitcd Adi_Estilos```
 
-# ============================================
-# CONFIGURACIÓN DEL SERVIDOR
-# ============================================
-PORT=3000
-NODE_ENV=development
+2.Instalar dependencias:
 
-# ============================================
-# CONFIGURACIÓN JWT
-# ============================================
-JWT_SECRET=tu-secret-key-muy-segura-de-al-menos-32-caracteres
-JWT_EXPIRES_IN=24h
 
-# ============================================
-# CONFIGURACIÓN CORS
-# ============================================
-CORS_ORIGIN=http://localhost:5173
+bashBackend cd npm install npx prisma generateFrontend cd npm install```
 
-# ============================================
-# CONFIGURACIÓN CLOUDINARY (Opcional)
-# ============================================
-CLOUDINARY_CLOUD_NAME=tu_cloud_name
-CLOUDINARY_API_KEY=tu_api_key
-CLOUDINARY_API_SECRET=tu_api_secret
-```
 
-### Frontend (`Frontend/.env`)
+--
 
-```
-env
-# ============================================
-# CONFIGURACIÓN API
-# ============================================
-VITE_API_URL=http://localhost:3000/api
-VITE_APP_NAME=Adi Estilos
-VITE_FILES_URL=http://localhost:3000
-```
+⚙️ Configuración Variables Entorno
 
----
 
-## 🏃 Ejecutar en Desarrollo
+Backend .env:
 
-### Iniciar Backend
+```envDATABASE_URL postgresql postgres Android13@localhost adi_estilos?schema publicPORT3000NODE_ENV developmentJWT_SECRET tu-secret-key-muy-segura-minimo32charsJWT_EXPIRES_IN24hCORS_ORIGIN http localhost5173STORAGE_MODE hybridCLOUDINARY_CLOUD_NAME dm5qezkocCLOUDINARY_API_KEY your_api_key CLOUDINARY_API_SECRET your_api_secretBASE_URL http localhost3000MAX_FILE_SIZE52428800```
 
-```
-bash
-cd Backend
-npm run dev
-```
+Frontend .env:
 
-El backend estará disponible en: `http://localhost:3000`
+```envVITE_API_URL=http//localhost3000/apiVITE_APP_NAMEAdi Estilos VITE_FILES_URLhttp//localhost3000```
 
-### Iniciar Frontend
 
-```
-bash
-cd Frontend
-npm run dev
-```
+--
 
-La aplicación estará disponible en: `http://localhost:5173`
+🏃 Ejecutar Desarrollo
 
----
 
-## 🔐 Credenciales de Prueba (Seed)
+Backend:
 
-El proyecto incluye datos de prueba por defecto:
 
-| Rol | Email | Contraseña |
-|-----|--------|-------------|
-| Administrador | admin@adi.com | admin123 |
-| Cliente | cliente@adi.com | cliente123 |
+bashcd Backendnpm run devdisponible http //localhost3000`
 
----
+`Front-end:`
 
-## 📦 Scripts Disponibles
 
-### Backend
 
-```
-bash
-npm run dev              # Desarrollo (nodemon)
-npm run start           # Producción (PM2)
-npm run prisma:studio   # Prisma Studio
-npm run db:reset       # Resetear base de datos
-```
+`cd Frontend npm run dev disponible http //localhost5173`
 
-### Frontend
+Credenciales prueba seed:-Admin admin@adi.com/admin123-Cliente cliente@adi.com/cliente123-
 
-```
-bash
-npm run dev             # Servidor desarrollo
-npm run build          # Build producción
-npm run preview        # Preview build
-```
+-
 
----
+📦 Scripts Disponibles
 
-## 🚀 Despliegue en Producción
 
-### Frontend → Vercel
 
-1. Conectar repositorio en [Vercel](https://vercel.com)
-2. Configurar **Root Directory**: `Frontend`
-3. **Framework Preset**: `Vite`
-4. **Build Command**: `npm run build`
-5. **Output Directory**: `dist`
-6. Agregar variables de entorno:
-   - `VITE_API_URL`
-   - `VITE_APP_NAME`
-   - `VITE_FILES_URL`
+Backend:npm run dev desarrollo nodemon-npm start producción PM-npx prisma studio Studio-Pront-end:npm run dev servidor desarrollon pm build build producciónnpm preview preview build`- -
 
-### Backend → Render
+🚀 Despliegue Producción
 
-1. Conectar repositorio en [Render](https://render.com)
-2. Configurar **Root Directory**: `Backend`
-3. **Build Command**: `npm install && npx prisma generate`
-4. **Start Command**: `npm start`
-5. Agregar variables de entorno:
-   - `DATABASE_URL`
-   - `JWT_SECRET`
-   - `PORT=3000`
-   - `NODE_ENV=production`
 
----
 
-## 📊 Módulos del Sistema
 
-### E-commerce
+Frontend → Vercel1 Conectar repositorio [Vercel] h ttps vercel com2 Root Directory F rontendFramework Preset Vi-teBuild Command npm run buil-dOutput Director-y distAgregar variables entorno-VITE_API_U-RL-VITE_APP_NAM-E-VITE_FILES_-URL-Back end → Render1 Conectar repositorio [Render] ht tps render com2 Root Direct ory Backen-dBuild Command npm install && n px prisma generateStart Comm-and npm startAgregar variables entorno-DATABASE_URL-JWT_SECRET-PORT-NODE_ENV-production ST ORAGE_MODE-hybrid-CLOU DINARY credentials`
 
-- ✅ Catálogo de productos con variantes (color + talla)
-- ✅ Carrito de compras interactivo
-- ✅ Sistema de autenticación JWT
-- ✅ Proceso de compra y pedidos
-- ✅ Múltiples métodos de pago
+-
 
-### Administración
+🛡️ Seguridad Implementada
 
-- ✅ Dashboard con estadísticas en tiempo real
-- ✅ Gestión de productos y variantes
-- ✅ Control de inventario y movimientos
-- ✅ Sistema de ventas POS
-- ✅ Gestión de créditos y cobranza
-- ✅ Módulo de compras a proveedores
-- ✅ Descuentos y promociones
-- ✅ Devoluciones y garantías
-- ✅ Reportes y analytics
 
----
 
-## 🛡️ Seguridad Implementada
+MedidaDescripción:JWT autenticación tokensbcrypt encrip-tamiento contraseñasHelmet headers seguridadHTTPCORS control orígenes cruzadosRate Limiting protección ataquesValidación express-valida-tor endpointsseguridad completa!
 
-| Medida | Descripción |
-|--------|-------------|
-| JWT | Autenticación basada en tokens |
-| bcrypt | Encriptación de contraseñas |
-| Helmet | Headers de seguridad HTTP |
-| CORS | Control de orígenes cruzados |
-| Rate Limiting | Protección contra ataques |
-| Validación | express-validator en todos los endpoints |
+----
 
----
+📊 Módulos Sistema
 
-## 📈 Estado Actual del Proyecto
 
-| Componente | Estado | Notas |
-|------------|--------|--------|
-| Backend API | ✅ Estable | Listo para producción |
-| Frontend | ✅ Estable | Build exitoso |
-| Base de Datos | ✅ Migrado | PostgreSQL |
-| Imágenes | ✅ Híbrido | Cloudinary + Local |
 
----
 
-## 🗺️ Roadmap
 
-- [ ] Implementar pagos con Stripe/MercadoPago
-- [ ] Sistema de notificaciones push
-- [ ] App móvil (React Native)
-- [ ] Dashboard en tiempo real con WebSockets
-- [ ] Multi-tienda / Multi-inventario
+Módul-oFuncionalidad:
+---|---|---|
+Catálogo productos|variantes color+talla|Carro-compras interactivoSistema autenticaci ón JWTSistema créditocobranzaControl inventario,movimientosDashboard anal ytics reportes!Punto venta POSGestión proveedorescom-prasDescuentos promocionesDevoluciones garantíaMulti-usuario rolespermisos!
 
----
+----
 
-## 📄 Licencia
+📈 Estado Actual Proyecto
 
-ISC License - © 2024 Adi Estilos
 
----
 
-## 👤 Autor
 
-**Desarrollado por:** Alejandro Piedrahita (@Alejostone)
+ComponenteEstadoNotas:|Backe nd API Establecido listopara producciónFro ntEnd Establecidobuild exitosoBase Datos Migradoa Post-gre SQLImágenes HíbridoCloudin ary+L ocalStorageSeguridadCompletaautenti caclónJWTCORSRateLimiting!
 
-<div align="center">
 
-⭐️ **¡Dale una estrella al proyecto si te fue útil!** ⭐️
+----
 
-</div>
+🗺️ Roadmap
+
+
+
+
+
+
+Implementarpagos StripeMercad oPagoNotificaciones pushApp móvil ReactNativeDashboard tiempo real WebSocketsMultitienda multiinventario!
+
+
+----Licencia ISCLicense ©2024 AdiEstilo sAutor Desarrolladopor Alejandro Piedrahita @Ale-jostone ⭐ Daleestrell al proyecto si te fue útil!
