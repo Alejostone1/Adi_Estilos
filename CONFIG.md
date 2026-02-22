@@ -99,6 +99,56 @@ CLOUDINARY_API_SECRET=tu_api_secret
 
 ---
 
+## Desplegar Backend en Render
+
+### Paso 1: Crear cuenta en Render
+
+1. Ve a https://render.com
+2. Crea una cuenta (puedes usar GitHub)
+3. Click en **New** > **Web Service**
+
+### Paso 2: Conectar tu repositorio
+
+1. Autoriza Render a acceder a tu repositorio GitHub
+2. Selecciona el repositorio `Adi_Estilos`
+3. Branch: `main`
+
+### Paso 3: Configurar el servicio
+
+Configure así:
+
+| Campo | Valor |
+|-------|-------|
+| Name | `adi-estilos-backend` |
+| Root Directory | `Backend` |
+| Build Command | `npm install` |
+| Start Command | `node src/server.js` |
+
+### Paso 4: Variables de Entorno
+
+En la sección **Environment**, agrega:
+
+```
+NODE_ENV=production
+PORT=3000
+DATABASE_URL=postgresql://... (de Neon)
+JWT_SECRET=<genera-una-clave-segura>
+CORS_ORIGIN=https://tu-dominio.vercel.app
+CLOUDINARY_CLOUD_NAME=dm5qezkoc
+CLOUDINARY_API_KEY=<tu-api-key>
+CLOUDINARY_API_SECRET=<tu-api-secret>
+STORAGE_MODE=hybrid
+USE_CLOUDINARY=true
+```
+
+### Paso 5: Desplegar
+
+1. Click en **Create Web Service**
+2. Espera a que termine el build (puede tomar 5-10 minutos)
+3. Cuando termine, verás una URL como: `https://adi-estilos-backend.onrender.com`
+
+---
+
 ## Configuración para Render
 
 ### Variables de Entorno en Render Dashboard
