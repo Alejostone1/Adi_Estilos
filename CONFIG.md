@@ -1,5 +1,17 @@
 # Configuración de Variables de Entorno - ADI Estilos
 
+## Arquitectura del Proyecto
+
+```
+Frontend (Vercel)
+       ↓
+Backend (Render/Railway/VPS)
+       ↓
+PostgreSQL (Neon.tech) ←✨ Tu base de datos
+       ↓
+Imágenes (Cloudinary) ←✨ Tus imágenes ya están aquí
+```
+
 ## Estructura de Archivos
 
 ```
@@ -21,7 +33,7 @@ Frontend/
 |----------|-----------|-------------|-------------------|-------------------|
 | `NODE_ENV` | ✅ | Entorno de ejecución | `development` | `production` |
 | `PORT` | ✅ | Puerto del servidor | `3000` | `3000` |
-| `DATABASE_URL` | ✅ | Conexión PostgreSQL | `postgresql://user:pass@localhost:5432/adiweb` | (Render provides) |
+| `DATABASE_URL` | ✅ | Conexión PostgreSQL (Neon) | `postgresql://user:pass@localhost:5432/adiweb` | (Neon proporciona) |
 | `JWT_SECRET` | ✅ | Clave para tokens JWT | `dev-secret-32chars-minimum` | (Generate secure) |
 | `JWT_EXPIRES_IN` | ⏲️ | Expiración access token | `24h` | `24h` |
 | `JWT_REFRESH_EXPIRES_IN` | ⏲️ | Expiración refresh token | `30d` | `30d` |
@@ -44,6 +56,48 @@ Leyenda:
 |----------|-----------|-------------|-------------------|-------------------|
 | `VITE_API_URL` | ✅ | URL del API backend | `http://localhost:3000/api` | `https://tu-backend.onrender.com/api` |
 | `VITE_FILES_URL` | ✅ | URL de archivos | `http://localhost:3000` | `https://tu-backend.onrender.com` |
+
+## Configuración con Neon.tech (Tu Base de Datos)
+
+### Ya tienes Neon configurado:
+https://console.neon.tech/app/projects/soft-heart-33887211
+
+### Para obtener la URL de conexión:
+
+1. Ve al Dashboard de Neon
+2. Click en **Connection Details**
+3. Copia la URL de "Prisma" o "Direct connection"
+
+Formato típico:
+```
+postgresql://usuario:password@host.neon.tech/neondb?sslmode=require
+```
+
+### Luego agrega la URL en:
+- **Render**: Environment Variables → DATABASE_URL
+- **Railway**: Variables → DATABASE_URL
+
+---
+
+## Configuración con Cloudinary (Tus Imágenes)
+
+### Tus imágenes ya funcionan en Cloudinary:
+- **Cloud Name**: `dm5qezkoc` (ya configurado en el código)
+
+### Para obtener credenciales completas:
+
+1. Ve a https://cloudinary.com/users/sign_in
+2. Settings (⚙️) → API Keys
+3. Copia **API Key** y **API Secret**
+
+### Agrega en tu servicio:
+```
+CLOUDINARY_CLOUD_NAME=dm5qezkoc
+CLOUDINARY_API_KEY=tu_api_key
+CLOUDINARY_API_SECRET=tu_api_secret
+```
+
+---
 
 ## Configuración para Render
 
