@@ -8,9 +8,7 @@
  */
 
 const { prisma } = require('../../config/databaseConfig');
-const fs = require('fs/promises');
-const path = require('path');
-const { configuracionServidor } = require('../../config/serverConfig');
+const storageService = require('../../services/storage/storageService');
 
 /**
  * @function establecerImagenPrincipal
@@ -37,7 +35,7 @@ const establecerImagenPrincipal = async (idImagen, tipo) => {
 
   return prisma.$transaction(async (tx) => {
     const modeloTx = tipo === 'producto' ? tx.imagenProducto : tx.imagenVariante;
-    
+
     // 1. Quitar la marca de principal de todas las demás imágenes de la entidad
     await modeloTx.updateMany({
       where: {
@@ -79,15 +77,19 @@ const crearImagen = async (idEntidad, tipo, file, body) => {
     body
   });
 
-  const subdirectorio = tipo === 'producto' ? 'productos' : 'variantes';
-  const rutaImagen = `/uploads/${subdirectorio}/${file.filename}`;
+  // Determinar el tipo de storage para el servicio
+  const storageTipo = tipo === 'producto' ? 'productos' : 'variantes';
 
+  // Usar el storageService para guardar la imagen (soporta local/cloudinary/hybrid)
+  const resultadoStorage = await storageService.guardar(file, storageTipo);
+
+  const rutaImagen = resultadoStorage.url;
   console.log('📍 Ruta de imagen a guardar:', rutaImagen);
 
   // Verificar si es la primera imagen para este producto/variante
   const modeloImagen = tipo === 'producto' ? prisma.imagenProducto : prisma.imagenVariante;
   const idEntidadCampo = tipo === 'producto' ? 'idProducto' : 'idVariante';
-  
+
   const imagenesExistentes = await modeloImagen.count({
     where: { [idEntidadCampo]: idEntidad }
   });
@@ -95,7 +97,7 @@ const crearImagen = async (idEntidad, tipo, file, body) => {
   // Si es la primera imagen, automáticamente es principal
   const esPrimeraImagen = imagenesExistentes === 0;
   const esPrincipalManual = body.esPrincipal === 'true' || body.esPrincipal === true;
-  
+
   const datos = {
     rutaImagen,
     esPrincipal: esPrimeraImagen || esPrincipalManual,
@@ -110,7 +112,7 @@ const crearImagen = async (idEntidad, tipo, file, body) => {
       data: { esPrincipal: false },
     });
   }
-  
+
   return modeloImagen.create({
     data: {
       ...datos,
@@ -138,10 +140,9 @@ const eliminarImagen = async (idImagen, tipo) => {
     throw error;
   }
 
-  // 2. Eliminar el archivo del sistema de archivos
+// 2. Eliminar el archivo usando el storageService (soporta local/cloudinary/hybrid)
   try {
-    const rutaCompleta = path.join(configuracionServidor.uploads.directorio, '..', imagen.rutaImagen);
-    await fs.unlink(rutaCompleta);
+    await storageService.eliminar(imagen.rutaImagen);
   } catch (fileError) {
     // Si el archivo no existe, no es un error crítico, pero se debe registrar
     console.warn(`No se pudo eliminar el archivo de imagen: ${imagen.rutaImagen}. Puede que ya haya sido borrado.`);
@@ -162,7 +163,7 @@ const eliminarImagen = async (idImagen, tipo) => {
 const actualizarDatosImagen = async (idImagen, tipo, data) => {
     const modeloImagen = tipo === 'producto' ? prisma.imagenProducto : prisma.imagenVariante;
     const idCampo = tipo === 'producto' ? 'idImagen' : 'idImagenVariante';
-    
+
     return modeloImagen.update({
         where: { [idCampo]: idImagen },
         data: {

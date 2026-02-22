@@ -67,14 +67,18 @@ async function obtenerResumen(rango) {
 
   // Obtener detalles de las variantes más vendidas
   const idsVariantes = productosMasVendidos.map(p => p.idVariante);
-  const detallesVariantes = await prisma.varianteProducto.findMany({
-    where: { idVariante: { in: idsVariantes } },
-    include: {
-        producto: { select: { nombreProducto: true } },
-        color: true,
-        talla: true
-    }
-  });
+  let detallesVariantes = [];
+
+  if (idsVariantes.length > 0) {
+    detallesVariantes = await prisma.varianteProducto.findMany({
+      where: { idVariante: { in: idsVariantes } },
+      include: {
+          producto: { select: { nombreProducto: true } },
+          color: true,
+          talla: true
+      }
+    });
+  }
 
   const topProductos = productosMasVendidos.map(p => {
     const detalle = detallesVariantes.find(v => v.idVariante === p.idVariante);
@@ -83,40 +87,56 @@ async function obtenerResumen(rango) {
       variante: detalle
     };
   });
-  
+
   // 5. Ventas por día para el gráfico (últimos 7 días)
-  const ventasPorDia = await prisma.$queryRaw`
-    SELECT
-        DATE(creado_en) as fecha,
-        SUM(total) as totalVentas
-    FROM ventas
-    WHERE creado_en >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
-    GROUP BY DATE(creado_en)
-    ORDER BY fecha ASC;
-  `;
+  let ventasPorDia = [];
+  try {
+    ventasPorDia = await prisma.$queryRaw`
+      SELECT
+          DATE(creado_en) as fecha,
+          SUM(total) as totalVentas
+      FROM ventas
+      WHERE creado_en >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+      GROUP BY DATE(creado_en)
+      ORDER BY fecha ASC;
+    `;
+  } catch (error) {
+    console.error('Error obteniendo ventas por día:', error);
+  }
 
   // 6. Estadísticas adicionales de inventario
-  const productosBajoStock = await prisma.varianteProducto.count({
+  // Obtener productos con stock mínimo definido
+  const productosConStockMinimo = await prisma.varianteProducto.findMany({
     where: {
       estado: 'activo',
-      cantidadStock: { lte: prisma.varianteProducto.fields.stockMinimo },
       stockMinimo: { gt: 0 }
+    },
+    select: {
+      cantidadStock: true,
+      stockMinimo: true
     }
   });
+
+  // Contar productos bajo stock manualmente
+  const productosBajoStock = productosConStockMinimo.filter(
+    p => p.cantidadStock > 0 && p.cantidadStock <= p.stockMinimo
+  ).length;
 
   const productosSinStock = await prisma.varianteProducto.count({
     where: {
       estado: 'activo',
-      cantidadStock: 0
+      cantidadStock: { lte: 0 }
     }
   });
 
   const valorTotalInventario = await prisma.varianteProducto.aggregate({
     _sum: {
-      cantidadStock: true,
-      precioCosto: true
+      cantidadStock: true
     },
-    where: { estado: 'activo' }
+    where: {
+      estado: 'activo',
+      cantidadStock: { gt: 0 }
+    }
   });
 
   // 7. Total de productos únicos
@@ -143,7 +163,7 @@ async function obtenerResumen(rango) {
     resumenInventario: {
       productosBajoStock,
       productosSinStock,
-      valorTotalInventario: (valorTotalInventario._sum.cantidadStock || 0) * (valorTotalInventario._sum.precioCosto || 0),
+      valorTotalInventario: valorTotalInventario._sum.cantidadStock || 0,
       totalProductos
     }
   };

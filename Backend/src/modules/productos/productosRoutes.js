@@ -52,6 +52,7 @@ const {
 } = require('../../middleware/authMiddleware');
 
 const { subirImagenProducto } = require('../../middleware/uploadMiddleware');
+const storageService = require('../../services/storage/storageService');
 
 // -----------------------------------------------------
 // CONFIGURACIÓN INICIAL
@@ -107,19 +108,37 @@ router.get(
  * Subir imagen de producto
  * POST /api/productos/upload
  */
-router.post('/upload', middlewareGestion, subirImagenProducto, (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({
-      mensaje: 'No se ha subido ninguna imagen'
+router.post('/upload', middlewareGestion, async (req, res) => {
+  try {
+    // Ejecutar middleware de multer
+    await new Promise((resolve, reject) => {
+      subirImagenProducto(req, res, (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+
+    if (!req.file) {
+      return res.status(400).json({
+        mensaje: 'No se ha subido ninguna imagen'
+      });
+    }
+
+    // Usar storageService para guardar la imagen
+    const resultado = await storageService.guardar(req.file, 'productos');
+
+    res.status(200).json({
+      mensaje: 'Imagen subida exitosamente',
+      url: resultado.url,
+      filename: req.file.filename
+    });
+  } catch (error) {
+    console.error('Error al subir imagen:', error);
+    res.status(500).json({
+      mensaje: 'Error al subir la imagen',
+      error: error.message
     });
   }
-
-  const urlImagen = `/uploads/productos/${req.file.filename}`;
-  res.status(200).json({
-    mensaje: 'Imagen subida exitosamente',
-    url: urlImagen,
-    filename: req.file.filename
-  });
 });
 
 /**

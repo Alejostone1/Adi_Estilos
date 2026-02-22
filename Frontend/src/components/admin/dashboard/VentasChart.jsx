@@ -1,20 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Skeleton, Typography } from 'antd';
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  DollarSign, 
-  Activity, 
-  ArrowUpRight, 
+import { Typography } from 'antd';
+import {
+  TrendingUp,
+  DollarSign,
+  Activity,
+  ArrowUpRight,
   ArrowDownRight,
   Calendar,
-  BarChart3,
-  Users,
-  ShoppingCart
+  BarChart3
 } from 'lucide-react';
 import {
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -23,7 +18,8 @@ import {
   Area,
   AreaChart,
   ComposedChart,
-  Bar
+  Bar,
+  Line
 } from 'recharts';
 import { useTheme } from '../../../context/ThemeContext';
 
@@ -31,11 +27,26 @@ const { Title, Text } = Typography;
 
 const VentasChart = ({ data, loading, tipo = 'line' }) => {
   const { isDark } = useTheme();
-  const [selectedPeriod, setSelectedPeriod] = useState('week');
   const [chartType, setChartType] = useState('area');
+  const [isReady, setIsReady] = useState(false);
+
+  // Efecto para esperar a que el componente esté listo
+  useEffect(() => {
+    // Delay para asegurar que el DOM tenga dimensiones
+    const timer = setTimeout(() => {
+      setIsReady(true);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Procesar datos de ventas
   const processedData = useMemo(() => {
+    // Si no está listo, retornar datos vacíos
+    if (!isReady) {
+      return [];
+    }
+
     if (!data?.graficoVentas || data.graficoVentas.length === 0) {
       // Datos de ejemplo cuando no hay datos reales
       return [
@@ -51,11 +62,11 @@ const VentasChart = ({ data, loading, tipo = 'line' }) => {
 
     return data.graficoVentas.map(item => ({
       date: new Date(item.fecha).toLocaleDateString('es-CO', { weekday: 'short' }).slice(0, 3),
-      sales: Number(item.totalVentas) || Math.floor(Math.random() * 50000) + 30000,
+      sales: Number(item.totalVentas) || 0,
       orders: Math.floor(Math.random() * 20) + 10,
       customers: Math.floor(Math.random() * 15) + 8
     }));
-  }, [data]);
+  }, [data, isReady]);
 
   // Calcular métricas avanzadas
   const metrics = useMemo(() => {
@@ -72,19 +83,19 @@ const VentasChart = ({ data, loading, tipo = 'line' }) => {
 
     const sales = processedData.map(d => d.sales);
     const orders = processedData.map(d => d.orders);
-    
+
     const totalSales = sales.reduce((a, b) => a + b, 0);
     const avgSales = totalSales / sales.length;
     const totalOrders = orders.reduce((a, b) => a + b, 0);
     const avgOrderValue = totalSales / totalOrders;
-    
+
     // Calcular crecimiento (comparando última semana con anterior)
-    const growth = sales.length > 1 
-      ? ((sales[sales.length - 1] - sales[0]) / sales[0]) * 100 
+    const growth = sales.length > 1
+      ? ((sales[sales.length - 1] - sales[0]) / sales[0]) * 100
       : 0;
 
-    const topDay = processedData.reduce((max, day) => 
-      day.sales > max.sales ? day : max, 
+    const topDay = processedData.reduce((max, day) =>
+      day.sales > max.sales ? day : max,
       processedData[0]
     );
 
@@ -136,7 +147,7 @@ const VentasChart = ({ data, loading, tipo = 'line' }) => {
               <p className="text-sm text-slate-500 dark:text-slate-400">Métricas en tiempo real</p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <button
               onClick={() => setChartType(chartType === 'area' ? 'bar' : 'area')}
@@ -212,8 +223,8 @@ const VentasChart = ({ data, loading, tipo = 'line' }) => {
 
       {/* Chart */}
       <div className="p-6">
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
+        <div style={{ width: '100%', height: '320px', minHeight: '320px' }}>
+          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
             {chartType === 'area' ? (
               <AreaChart data={processedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <defs>
@@ -227,20 +238,20 @@ const VentasChart = ({ data, loading, tipo = 'line' }) => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
-                <XAxis 
-                  dataKey="date" 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fill: axisColor, fontSize: 12 }} 
+                <XAxis
+                  dataKey="date"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: axisColor, fontSize: 12 }}
                 />
-                <YAxis 
-                  axisLine={false} 
-                  tickLine={false} 
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
                   tick={{ fill: axisColor, fontSize: 12 }}
                   tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`}
                 />
-                <Tooltip 
-                  contentStyle={{ 
+                <Tooltip
+                  contentStyle={{
                     backgroundColor: isDark ? '#1e293b' : '#ffffff',
                     border: '1px solid #e2e8f0',
                     borderRadius: '8px',
@@ -275,20 +286,20 @@ const VentasChart = ({ data, loading, tipo = 'line' }) => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
-                <XAxis 
-                  dataKey="date" 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fill: axisColor, fontSize: 12 }} 
+                <XAxis
+                  dataKey="date"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: axisColor, fontSize: 12 }}
                 />
-                <YAxis 
-                  axisLine={false} 
-                  tickLine={false} 
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
                   tick={{ fill: axisColor, fontSize: 12 }}
                   tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`}
                 />
-                <Tooltip 
-                  contentStyle={{ 
+                <Tooltip
+                  contentStyle={{
                     backgroundColor: isDark ? '#1e293b' : '#ffffff',
                     border: '1px solid #e2e8f0',
                     borderRadius: '8px',

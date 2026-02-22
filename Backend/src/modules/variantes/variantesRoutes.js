@@ -1,4 +1,3 @@
-
 /**
  * @file variantesRoutes.js
  * @brief Archivo de rutas para el módulo de Variantes de Producto.
@@ -13,6 +12,7 @@ const router = express.Router();
 const variantesController = require('./variantesController');
 const { subirImagenVariante } = require('../../middleware/uploadMiddleware');
 const { rutaAdministrador, verificarTokenMiddleware } = require('../../middleware/authMiddleware');
+const storageService = require('../../services/storage/storageService');
 
 /**
  * @route GET /api/variantes
@@ -64,19 +64,37 @@ router.delete('/:id', rutaAdministrador(), variantesController.eliminarVariante)
  * @description Sube una imagen para una variante y devuelve la URL.
  * @access Protegido
  */
-router.post('/upload', verificarTokenMiddleware, subirImagenVariante, (req, res) => {
-    if (!req.file) {
-      return res.status(400).json({ 
-        mensaje: 'No se ha subido ninguna imagen' 
+router.post('/upload', verificarTokenMiddleware, async (req, res) => {
+    try {
+      // Ejecutar middleware de multer
+      await new Promise((resolve, reject) => {
+        subirImagenVariante(req, res, (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
+
+      if (!req.file) {
+        return res.status(400).json({
+          mensaje: 'No se ha subido ninguna imagen'
+        });
+      }
+
+      // Usar storageService para guardar la imagen
+      const resultado = await storageService.guardar(req.file, 'variantes');
+
+      res.status(200).json({
+        mensaje: 'Imagen de variante subida exitosamente',
+        url: resultado.url,
+        filename: req.file.filename
+      });
+    } catch (error) {
+      console.error('Error al subir imagen:', error);
+      res.status(500).json({
+        mensaje: 'Error al subir la imagen',
+        error: error.message
       });
     }
-    
-    const urlImagen = `/uploads/variantes/${req.file.filename}`;
-    res.status(200).json({ 
-      mensaje: 'Imagen de variante subida exitosamente',
-      url: urlImagen,
-      filename: req.file.filename
-    });
 });
 
 // Exportar el enrutador para su uso en la aplicación principal

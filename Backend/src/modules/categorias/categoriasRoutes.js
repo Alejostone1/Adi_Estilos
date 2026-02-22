@@ -14,6 +14,7 @@ const {
 const { verificarTokenMiddleware, verificarRol } = require('../../middleware/authMiddleware');
 const { validar, esquemas } = require('../../middleware/validationMiddleware');
 const { subirImagenCategoria } = require('../../middleware/uploadMiddleware');
+const storageService = require('../../services/storage/storageService');
 
 // Crear una instancia del enrutador
 const router = Router();
@@ -50,19 +51,37 @@ router.get('/:id', validar(esquemas.idEnUrl), obtenerCategoriaPorId);
  * @desc    Subir imagen de categoría.
  * @access  Administrador, Bodeguero
  */
-router.post('/upload', middlewareDeGestion, subirImagenCategoria, (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({
-      mensaje: 'No se ha subido ninguna imagen'
+router.post('/upload', middlewareDeGestion, async (req, res) => {
+  try {
+    // Primero ejecutamos el middleware de multer
+    await new Promise((resolve, reject) => {
+      subirImagenCategoria(req, res, (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+
+    if (!req.file) {
+      return res.status(400).json({
+        mensaje: 'No se ha subido ninguna imagen'
+      });
+    }
+
+    // Usar storageService para guardar la imagen (soporta local/cloudinary/hybrid)
+    const resultado = await storageService.guardar(req.file, 'categorias');
+
+    res.status(200).json({
+      mensaje: 'Imagen subida exitosamente',
+      url: resultado.url,
+      filename: req.file.filename
+    });
+  } catch (error) {
+    console.error('Error al subir imagen:', error);
+    res.status(500).json({
+      mensaje: 'Error al subir la imagen',
+      error: error.message
     });
   }
-
-  const urlImagen = `/uploads/categorias/${req.file.filename}`;
-  res.status(200).json({
-    mensaje: 'Imagen subida exitosamente',
-    url: urlImagen,
-    filename: req.file.filename
-  });
 });
 
 // =================================================================
@@ -77,7 +96,6 @@ router.post('/upload', middlewareDeGestion, subirImagenCategoria, (req, res) => 
 router.post(
   '/',
   middlewareDeGestion,
-  // Aquí se podría añadir un esquema de validación para la creación
   crearCategoria
 );
 

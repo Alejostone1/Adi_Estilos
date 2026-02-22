@@ -53,12 +53,12 @@ export default function AjustesInventarioPage() {
   const getImagenUrl = (path) => {
     if (!path) return '/placeholder.png';
     if (path.startsWith('http')) return path;
-    
+
     // Si la ruta ya incluye /uploads/, solo prefijamos el servidor
     if (path.startsWith('/uploads/')) {
         return `${FILES_URL}${path}`;
     }
-    
+
     // Si no incluye /uploads/, lo añadimos (común en el sistema)
     return `${FILES_URL}/uploads/${path.startsWith('/') ? path.substring(1) : path}`;
   };
@@ -220,7 +220,7 @@ export default function AjustesInventarioPage() {
   const calcularNuevoStock = (stockAnterior, cantidadAjuste, tipo) => {
     const ant = Number(stockAnterior) || 0;
     const aju = Number(cantidadAjuste) || 0;
-    
+
     if (tipo === 'entrada') return ant + aju;
     if (tipo === 'salida') return ant - aju;
     if (tipo === 'ajuste') return aju; // Conteo físico directo
@@ -317,7 +317,7 @@ export default function AjustesInventarioPage() {
       setShowCreateModal(false);
       resetAjusteFlow();
       cargarDatos();
-      
+
       Swal.fire({
         icon: 'success',
         title: 'Borrador Guardado',
@@ -359,7 +359,7 @@ export default function AjustesInventarioPage() {
         setLoading(true);
         await ajustesInventarioApi.aplicarAjuste(idAjuste);
         await cargarDatos();
-        
+
         Swal.fire({
           icon: 'success',
           title: '¡Operación Exitosa!',
@@ -586,7 +586,6 @@ export default function AjustesInventarioPage() {
                   setPagination(prev => ({ ...prev, page, limit: pageSize }));
                 },
                 responsive: true,
-                showSizeChanger: true,
                 pageSizeOptions: ['10', '20', '50', '100']
               }}
               columns={[
@@ -642,7 +641,7 @@ export default function AjustesInventarioPage() {
                     };
                     const cfg = CONFIG[estado] || CONFIG.borrador;
                     const Icon = cfg.icon;
-  
+
                     return (
                       <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg border ${cfg.bg} ${cfg.text} ${cfg.border} text-[9px] font-medium uppercase tracking-wide shadow-sm`}>
                         <Icon size={10} />
@@ -707,7 +706,7 @@ export default function AjustesInventarioPage() {
                           <Eye size={14} />
                         </button>
                       </Tooltip>
-  
+
                       {record.estado === 'borrador' && (
                         <>
                           <Tooltip title="Ejecutar">
@@ -718,7 +717,7 @@ export default function AjustesInventarioPage() {
                               <Play size={14} />
                             </button>
                           </Tooltip>
-  
+
                           <Tooltip title="Anular">
                             <button
                               onClick={() => handleCancelarAjuste(record.idAjuste)}
@@ -729,7 +728,7 @@ export default function AjustesInventarioPage() {
                           </Tooltip>
                         </>
                       )}
-  
+
                       {record.estado === 'aplicado' && (
                         <Tooltip title="Movimientos">
                           <button
@@ -847,16 +846,16 @@ export default function AjustesInventarioPage() {
                   dataSource={selectedAjuste.detalleAjustes?.map(detalle => {
                     const tipo = selectedAjuste.tipoMovimiento?.tipo || 'entrada';
                     const stockAnterior = Number(detalle.stockAnterior) || 0;
-                    
-                    // Si ya está aplicado, usamos stockNuevo guardado. 
+
+                    // Si ya está aplicado, usamos stockNuevo guardado.
                     // Si es borrador, proyectamos según el tipo.
                     let stockNuevo = Number(detalle.stockNuevo) || 0;
                     if (selectedAjuste.estado === 'borrador') {
                       stockNuevo = calcularNuevoStock(stockAnterior, detalle.cantidadAjuste, tipo);
                     }
-                    
-                    const delta = tipo === 'ajuste' ? (stockNuevo - stockAnterior) : 
-                                 tipo === 'salida' ? -Number(detalle.cantidadAjuste) : 
+
+                    const delta = tipo === 'ajuste' ? (stockNuevo - stockAnterior) :
+                                 tipo === 'salida' ? -Number(detalle.cantidadAjuste) :
                                  Number(detalle.cantidadAjuste);
 
                     return {
@@ -878,9 +877,9 @@ export default function AjustesInventarioPage() {
                       render: (producto, record) => (
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 border border-slate-100 dark:border-slate-700 shadow-sm">
-                             <img 
-                                src={getImagenUrl(getVarianteImagen(record.varianteData))} 
-                                alt="P" 
+                             <img
+                                src={getImagenUrl(getVarianteImagen(record.varianteData))}
+                                alt="P"
                                 className="w-full h-full object-cover"
                                 onError={(e) => { e.target.src = '/placeholder.png'; }}
                              />
@@ -892,9 +891,9 @@ export default function AjustesInventarioPage() {
                         </div>
                       )
                     },
-                    { 
-                        title: <span className="text-[10px] font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">SKU</span>, 
-                        dataIndex: 'sku', 
+                    {
+                        title: <span className="text-[10px] font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">SKU</span>,
+                        dataIndex: 'sku',
                         width: 120,
                         render: (sku) => <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded-md border border-indigo-100/50 dark:border-indigo-800/50">{sku}</span>
                     },
@@ -908,9 +907,9 @@ export default function AjustesInventarioPage() {
                       ),
                       width: 80
                     },
-                    { 
-                        title: <span className="text-[10px] font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Ant / Nuevo</span>, 
-                        key: 'stocks', 
+                    {
+                        title: <span className="text-[10px] font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Ant / Nuevo</span>,
+                        key: 'stocks',
                         render: (_, record) => (
                             <div className="flex items-center gap-2 text-[10px] font-bold">
                                 <span className="text-slate-400 line-through decoration-slate-300">{record.stockAnterior}</span>
@@ -920,11 +919,11 @@ export default function AjustesInventarioPage() {
                                 </span>
                             </div>
                         ),
-                        width: 120 
+                        width: 120
                     },
-                    { 
-                        title: <span className="text-[10px] font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Nota</span>, 
-                        dataIndex: 'observaciones', 
+                    {
+                        title: <span className="text-[10px] font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Nota</span>,
+                        dataIndex: 'observaciones',
                         ellipsis: true,
                         render: (obs) => obs ? <Tooltip title={obs}><span className="text-[10px] italic text-slate-400 font-medium">{obs}</span></Tooltip> : <span className="text-[10px] text-slate-300">-</span>
                     }
@@ -1026,7 +1025,7 @@ export default function AjustesInventarioPage() {
                        <div className="w-1.5 h-6 bg-indigo-500 rounded-full" />
                        <h3 className="font-bold text-xl text-slate-900 dark:text-white tracking-tight">Parámetros de Auditoría</h3>
                     </div>
-  
+
                     <Row gutter={[32, 32]}>
                       <Col span={24} md={14}>
                         <div className="space-y-2.5">
@@ -1131,7 +1130,7 @@ export default function AjustesInventarioPage() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-slate-100 dark:border-slate-800/50 pb-6">
                     <div className="flex items-center gap-4">
                       {selectedProductForAjuste ? (
-                        <button 
+                        <button
                           onClick={() => setSelectedProductForAjuste(null)}
                           className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px] font-bold uppercase transition-all hover:bg-slate-50 shadow-sm"
                         >
@@ -1172,7 +1171,7 @@ export default function AjustesInventarioPage() {
                           }, new Map()).values()
                         ) : [];
 
-                        const filteredProductos = productosUnicos.filter(p => 
+                        const filteredProductos = productosUnicos.filter(p =>
                           p.nombreProducto?.toLowerCase().includes(searchStep2.toLowerCase()) ||
                           p.codigoReferencia?.toLowerCase().includes(searchStep2.toLowerCase())
                         );
@@ -1227,7 +1226,7 @@ export default function AjustesInventarioPage() {
                     ) : (
                       // Vista de Variantes de un Producto
                       (() => {
-                        const variantesDelProducto = variantes.filter(v => 
+                        const variantesDelProducto = variantes.filter(v =>
                           v.idProducto === selectedProductForAjuste.idProducto &&
                           (
                             v.codigoSku?.toLowerCase().includes(searchStep2.toLowerCase()) ||
@@ -1247,8 +1246,8 @@ export default function AjustesInventarioPage() {
                               animate={{ opacity: 1, scale: 1 }}
                               key={variante.idVariante}
                               className={`cursor-pointer group bg-white dark:bg-slate-800 p-5 rounded-[2rem] border-2 transition-all duration-300 ${
-                                isSelected 
-                                  ? 'border-indigo-500 ring-8 ring-indigo-500/5 shadow-2xl shadow-indigo-500/10' 
+                                isSelected
+                                  ? 'border-indigo-500 ring-8 ring-indigo-500/5 shadow-2xl shadow-indigo-500/10'
                                   : 'border-slate-50 dark:border-slate-700 hover:border-indigo-200 dark:hover:border-indigo-500/30'
                               }`}
                               onClick={() => toggleVarianteSeleccion(variante)}
@@ -1256,10 +1255,10 @@ export default function AjustesInventarioPage() {
                               <div className="space-y-5">
                                 <div className="flex items-start gap-4">
                                   <div className="w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0 border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm relative group-hover:scale-105 transition-transform">
-                                    <img 
-                                      src={imagenUrl} 
-                                      alt="V" 
-                                      className="w-full h-full object-cover" 
+                                    <img
+                                      src={imagenUrl}
+                                      alt="V"
+                                      className="w-full h-full object-cover"
                                       onError={(e) => { e.target.src = '/placeholder.png'; }}
                                     />
                                     {isSelected && (
@@ -1285,7 +1284,7 @@ export default function AjustesInventarioPage() {
                                     </div>
                                   </div>
                                 </div>
-  
+
                                 <div className="flex items-center justify-between pt-4 border-t border-slate-50 dark:border-slate-700/50">
                                   <div className="flex flex-col">
                                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Existencias</span>
@@ -1314,7 +1313,7 @@ export default function AjustesInventarioPage() {
 
                   <AnimatePresence>
                   {selectedVariantes.length > 0 && (
-                    <motion.div 
+                    <motion.div
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: 20, opacity: 0 }}
@@ -1331,8 +1330,8 @@ export default function AjustesInventarioPage() {
                           </p>
                         </div>
                       </div>
-                      <button 
-                        onClick={nextStep} 
+                      <button
+                        onClick={nextStep}
                         className="px-8 py-3 bg-white text-indigo-600 rounded-2xl font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/10 flex items-center gap-2"
                       >
                         Continuar <ChevronRight size={18} />
@@ -1385,17 +1384,17 @@ export default function AjustesInventarioPage() {
                       const imagenUrl = getImagenUrl(getVarianteImagen(variante));
 
                       return (
-                        <div 
-                          key={variante.idVariante} 
+                        <div
+                          key={variante.idVariante}
                           className="group bg-white dark:bg-gray-800 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 hover:border-indigo-200 dark:hover:border-indigo-500/40 transition-all shadow-sm overflow-hidden"
                         >
                           <div className="flex flex-col xl:flex-row">
                             {/* Visual y Specs */}
                             <div className="bg-gray-50/50 dark:bg-gray-900/40 p-6 flex flex-row xl:flex-col items-center gap-6 xl:w-48 border-b xl:border-b-0 xl:border-r border-gray-100 dark:border-gray-700/50">
                               <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl shadow-black/5">
-                                <img 
-                                  src={imagenUrl} 
-                                  alt="V" 
+                                <img
+                                  src={imagenUrl}
+                                  alt="V"
                                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                   onError={(e) => { e.target.src = '/placeholder.png'; }}
                                 />
@@ -1430,9 +1429,9 @@ export default function AjustesInventarioPage() {
                                       className="w-full premium-input-number border-2 !border-indigo-100 dark:!border-indigo-900/50 focus:!border-indigo-500 !rounded-2xl dark:!bg-gray-800 transition-all font-bold text-center !text-lg"
                                       style={{ height: '56px' }}
                                       placeholder="±0"
-                                      controls={{ 
-                                          upIcon: <Plus className="text-indigo-500" size={14} />, 
-                                          downIcon: <Minus className="text-indigo-500" size={14} /> 
+                                      controls={{
+                                          upIcon: <Plus className="text-indigo-500" size={14} />,
+                                          downIcon: <Minus className="text-indigo-500" size={14} />
                                       }}
                                     />
                                     <div className="flex justify-between mt-2 px-1">
@@ -1444,8 +1443,8 @@ export default function AjustesInventarioPage() {
 
                                 {/* Nodo Resultado Final */}
                                 <div className={`flex flex-col items-center justify-center p-4 rounded-3xl border transition-all duration-500 ${
-                                  cantidadFinal < 0 ? 'bg-rose-50 dark:bg-rose-900/20 border-rose-100 dark:border-rose-800 text-rose-600' : 
-                                  cantidadAjuste !== 0 ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800 text-emerald-600' : 
+                                  cantidadFinal < 0 ? 'bg-rose-50 dark:bg-rose-900/20 border-rose-100 dark:border-rose-800 text-rose-600' :
+                                  cantidadAjuste !== 0 ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800 text-emerald-600' :
                                   'bg-gray-50 dark:bg-gray-900/30 border-gray-100 dark:border-gray-800/50 text-gray-400'
                                 }`}>
                                   <span className="text-[9px] font-bold uppercase tracking-widest mb-2 opacity-70">Proyección Final</span>
@@ -1659,4 +1658,3 @@ export default function AjustesInventarioPage() {
     </div>
   );
 }
-
